@@ -1,0 +1,9 @@
+[package]
+name = "dash-button-rs"
+version = "0.1.0"
+authors = ["Mikołaj Robakowski <mikolaj.rob+opensource@gmail.com>"]
+
+[dependencies]
+pcap = "0.5.7"
+error-chain = "0.10.0"
+csv = "0.15.0"
