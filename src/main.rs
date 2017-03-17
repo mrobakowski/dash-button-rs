@@ -3,6 +3,7 @@ extern crate pcap;
 #[macro_use]
 extern crate error_chain;
 extern crate csv;
+extern crate libc;
 
 use pcap::{Capture, Device};
 use std::io::{self};
@@ -18,6 +19,7 @@ mod errors {
         }
     }
 }
+
 use errors::*;
 
 pub mod ethernet;
@@ -73,17 +75,32 @@ fn run() -> Result<()> {
         }
     }
 
+    println!("cap: {}, uniq: {}", std::mem::size_of::<Capture<pcap::Inactive>>(), std::mem::size_of::<*mut libc::c_void>());
+
     println!("Amazon macs: {:?}", amazon_macs);
 
-    let mut cap = Capture::from_device(device)?.promisc(true);
+    let mut cap = Capture::from_device(device)?.promisc(true).snaplen(500);
     let mut cap = cap.open()?;
-    cap.filter(FILTER_ALL)?;
+    println!("setting immediate: {:?}", set_immediate(&mut cap));
+    cap.filter(FILTER_UDP)?;
 
     while let Ok(packet) = cap.next() {
         let frame = ethernet::Frame(packet.data);
-        println!("packet: {:?}", frame)
+        println!("packet src: {:?}, type: {:?}", frame.source(), frame.ethertype());
+        io::stdout().flush();
     }
 
     Ok(())
+}
+
+fn set_immediate<T: pcap::State>(capture: &mut Capture<T>) -> libc::c_int {
+    unsafe {
+        let ptr_ptr: *mut *mut libc::c_void = std::mem::transmute(capture);
+        pcap_setmintocopy(*ptr_ptr, 500)
+    }
+}
+
+extern "C" {
+    fn pcap_setmintocopy(pcap: *mut libc::c_void, size: libc::c_int) -> libc::c_int;
 }
 
