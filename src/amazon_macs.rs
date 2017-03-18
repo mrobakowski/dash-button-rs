@@ -1,0 +1,1 @@
+include!(concat!(env!("OUT_DIR"), "/amazon_macs_generated.rs"));

@@ -2,9 +2,12 @@
 name = "dash-button-rs"
 version = "0.1.0"
 authors = ["Mikołaj Robakowski <mikolaj.rob+opensource@gmail.com>"]
+build = "build.rs"
 
 [dependencies]
 pcap = "0.5.7"
 error-chain = "0.10.0"
-csv = "0.15.0"
 libc = "0.2.21"
+
+[build-dependencies]
+csv = "0.15.0"
