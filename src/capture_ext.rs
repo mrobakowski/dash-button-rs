@@ -10,21 +10,21 @@ pub trait CaptureExt {
 }
 
 impl CaptureExt for Capture<pcap::Inactive> {
-    #[cfg(terget_os = "windows")]
+    #[cfg(windows)]
     fn open_immediate(mut self) -> Result<Capture<pcap::Active>> {
         let mut cap = self.open()?;
         set_immediate(&mut cap)?;
         Ok(cap)
     }
 
-    #[cfg(not(terget_os = "windows"))]
+    #[cfg(not(windows))]
     fn open_immediate(mut self) -> Result<Capture<pcap::Active>> {
         set_immediate(&mut self)?;
         Ok(self.open()?)
     }
 }
 
-#[cfg(terget_os = "windows")]
+#[cfg(windows)]
 fn set_immediate<T: pcap::State>(capture: &mut Capture<T>) -> Result<()> {
     unsafe {
         assert!(std::mem::size_of::<Capture<pcap::Inactive>>() == std::mem::size_of::<*mut libc::c_void>());
@@ -36,7 +36,7 @@ fn set_immediate<T: pcap::State>(capture: &mut Capture<T>) -> Result<()> {
     }
 }
 
-#[cfg(not(terget_os = "windows"))]
+#[cfg(not(windows))]
 fn set_immediate<T: pcap::State>(capture: &mut Capture<T>) -> Result<()> {
     unsafe {
         assert!(std::mem::size_of::<Capture<pcap::Inactive>>() == std::mem::size_of::<*mut libc::c_void>());
@@ -49,9 +49,9 @@ fn set_immediate<T: pcap::State>(capture: &mut Capture<T>) -> Result<()> {
 }
 
 extern "C" {
-    #[cfg(terget_os = "windows")]
+    #[cfg(windows)]
     fn pcap_setmintocopy(pcap: *mut libc::c_void, size: libc::c_int) -> libc::c_int;
 
-    #[cfg(not(target_os = "windows"))]
+    #[cfg(not(windows))]
     fn pcap_set_immediate_mode(pcap: *mut libc::c_void, value: libc::c_int) -> libc::c_int;
 }
