@@ -11,7 +11,6 @@ pub mod amazon_macs;
 pub mod duration_ext;
 pub mod amazon_dash_button;
 
-
 use pcap::{Capture, Device};
 use std::io::{self};
 use std::io::Write;
@@ -45,7 +44,6 @@ fn main() {
     }
 }
 
-
 fn run() -> Result<()> {
     let devices = Device::list()?;
     println!("Found devices:");
@@ -55,19 +53,19 @@ fn run() -> Result<()> {
     }
     print!("\nDevice to use [1]: ");
     io::stdout().flush()?;
+
     let mut choice = String::new();
     io::stdin().read_line(&mut choice)?;
+
     let choice = choice.trim();
-    let choice: usize = if choice.is_empty() {
-        1
-    } else {
-        choice.parse()?
-    } - 1;
+    let choice: usize = if choice.is_empty() { 1 } else { choice.parse()? };
+    let choice =  choice - 1;
 
     let device = devices.into_iter().nth(choice).ok_or("index out of bounds")?;
 
     use amazon_dash_button::*;
 
+    println!("Listening for Amazon Dash Button presses on {}", device.name);
     let button = AmazonDashButton::from_mac("000000000000")?.listen_on(device);
 
     for DashButtonEvent { mac, time } in button.events()? {
@@ -76,4 +74,3 @@ fn run() -> Result<()> {
 
     Ok(())
 }
-
