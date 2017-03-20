@@ -11,7 +11,7 @@ pub trait CaptureExt {
 
 impl CaptureExt for Capture<pcap::Inactive> {
     #[cfg(windows)]
-    fn open_immediate(mut self) -> Result<Capture<pcap::Active>> {
+    fn open_immediate(self) -> Result<Capture<pcap::Active>> {
         let mut cap = self.open()?;
         set_immediate(&mut cap)?;
         Ok(cap)

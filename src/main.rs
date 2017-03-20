@@ -3,17 +3,24 @@ extern crate pcap;
 #[macro_use]
 extern crate error_chain;
 extern crate libc;
+extern crate try_from;
 
 pub mod ethernet;
 pub mod capture_ext;
 pub mod amazon_macs;
+pub mod duration_ext;
+pub mod amazon_dash_button;
+
 
 use pcap::{Capture, Device};
 use std::io::{self};
 use std::io::Write;
+use std::time::Duration;
 use errors::*;
 use capture_ext::*;
 use amazon_macs::*;
+use duration_ext::*;
+use amazon_dash_button::*;
 
 mod errors {
     error_chain! {
@@ -38,9 +45,6 @@ fn main() {
     }
 }
 
-pub const FILTER_ARP: &str = "arp";
-pub const FILTER_UDP: &str = "udp and ( port 67 or port 68 )";
-pub const FILTER_ALL: &str = "arp or ( udp and ( port 67 or port 68 ) )";
 
 fn run() -> Result<()> {
     let devices = Device::list()?;
@@ -62,19 +66,14 @@ fn run() -> Result<()> {
 
     let device = devices.into_iter().nth(choice).ok_or("index out of bounds")?;
 
-    let cap = Capture::from_device(device)?.promisc(true).snaplen(500);
-    let mut cap = cap.open_immediate()?;
-    cap.filter(FILTER_ALL)?;
+    use amazon_dash_button::*;
 
-    while let Ok(packet) = cap.next() {
-        let frame = ethernet::Frame(packet.data);
-        if AMAZON_MACS.iter().any(|x: &[u8; 3]| &*x == &frame.source()[..x.len()]) {
-            println!("Amazon dash button with mac {:?} pressed", frame.source());
-            io::stdout().flush()?;
-        }
+    let button = AmazonDashButton::from_mac("000000000000")?.listen_on(device);
+
+    for DashButtonEvent { mac, time } in button.events()? {
+        println!("Dash button with mac {:?} pressed at time {:?}!", mac, time);
     }
 
     Ok(())
 }
-
 
