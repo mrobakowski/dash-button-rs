@@ -23,7 +23,7 @@ fn run() -> Result<()> {
 
     println!("\n🔍 Searching for Amazon Dash Button...");
     let mac = AmazonDashButton::discover_on(device.name.as_str())?; // for some reason Device isn't Clone, but this works
-    println!("Discovered Amazon Dash Button with mac {}\n\nListening for presses...", mac);
+    println!("Discovered Amazon Dash Button with mac {}\n\n👂 Listening for presses...", mac);
 
     use chrono::prelude::*;
     for DashButtonEvent { time, .. } in AmazonDashButton::from_mac(mac)?.listen_on(device).events()? {
