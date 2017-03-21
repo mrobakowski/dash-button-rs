@@ -10,8 +10,6 @@
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Rust &lt;amazon-dash-rs&gt;" level="project" />
-    <orderEntry type="library" name="Cargo &lt;amazon-dash-rs&gt;" level="project" />
     <orderEntry type="library" name="Rust &lt;dash-button-rs&gt;" level="project" />
     <orderEntry type="library" name="Cargo &lt;dash-button-rs&gt;" level="project" />
   </component>
