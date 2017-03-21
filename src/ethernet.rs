@@ -12,10 +12,6 @@ impl<'a> ops::Deref for Frame<'a> {
 }
 
 impl<'a> Frame<'a> {
-    pub fn new(data: &'a [u8]) -> Self {
-        Frame(data)
-    }
-
     pub fn destination(&self) -> &[u8] {
         &self[..6]
     }

@@ -12,3 +12,9 @@ try_from = "0.2.1"
 
 [build-dependencies]
 csv = "0.15.0"
+
+[[example]]
+name = "find-dash-button"
+
+[dev-dependencies]
+chrono = "0.3.0"
