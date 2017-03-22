@@ -27,7 +27,8 @@ impl CaptureExt for Capture<pcap::Inactive> {
 #[cfg(windows)]
 fn set_immediate<T: pcap::State>(capture: &mut Capture<T>) -> Result<()> {
     unsafe {
-        assert!(std::mem::size_of::<Capture<pcap::Inactive>>() == std::mem::size_of::<*mut libc::c_void>());
+        assert!(std::mem::size_of::<Capture<pcap::Inactive>>() ==
+                std::mem::size_of::<*mut libc::c_void>());
         let ptr_ptr: *mut *mut libc::c_void = std::mem::transmute(capture);
         if pcap_setmintocopy(*ptr_ptr, 500) != 0 {
             Err("error while setting immediate")?
@@ -39,7 +40,8 @@ fn set_immediate<T: pcap::State>(capture: &mut Capture<T>) -> Result<()> {
 #[cfg(not(windows))]
 fn set_immediate<T: pcap::State>(capture: &mut Capture<T>) -> Result<()> {
     unsafe {
-        assert!(std::mem::size_of::<Capture<pcap::Inactive>>() == std::mem::size_of::<*mut libc::c_void>());
+        assert!(std::mem::size_of::<Capture<pcap::Inactive>>() ==
+                std::mem::size_of::<*mut libc::c_void>());
         let ptr_ptr: *mut *mut libc::c_void = std::mem::transmute(capture);
         if pcap_set_immediate_mode(*ptr_ptr, 1) != 0 {
             Err("error while setting immediate")?

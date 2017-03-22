@@ -16,17 +16,19 @@ fn main() {
         // as of time of writing, Amazon has only registered Large MAC Address Blocks
         // Large MAC Address Blocks are characterized by three prefix octets
         if company.contains("Amazon Technologies") {
-            amazon_macs.push(vec![
-                u8::from_str_radix(&mac[..2], 16).unwrap(),
-                u8::from_str_radix(&mac[2..4], 16).unwrap(),
-                u8::from_str_radix(&mac[4..6], 16).unwrap(),
-            ]);
+            amazon_macs.push(vec![u8::from_str_radix(&mac[..2], 16).unwrap(),
+                                  u8::from_str_radix(&mac[2..4], 16).unwrap(),
+                                  u8::from_str_radix(&mac[4..6], 16).unwrap()]);
         }
     }
 
-    let path = format!("{}/amazon_macs_generated.rs", std::env::var("OUT_DIR").unwrap());
+    let path = format!("{}/amazon_macs_generated.rs",
+                       std::env::var("OUT_DIR").unwrap());
     let mut out_file = File::create(path).unwrap();
-    write!(&mut out_file, "pub const AMAZON_MACS: [[u8; 3]; {}] = {:?};",
-           amazon_macs.len(), amazon_macs).unwrap();
+    write!(&mut out_file,
+           "pub const AMAZON_MACS: [[u8; 3]; {}] = {:?};",
+           amazon_macs.len(),
+           amazon_macs)
+            .unwrap();
     out_file.flush().unwrap();
 }
