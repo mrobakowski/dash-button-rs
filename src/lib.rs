@@ -118,7 +118,6 @@ impl AmazonDashButton {
     pub fn from_mac<T: TryInto<Mac>>(mac: T) -> Result<AmazonDashButton>
         where Error: From<<T as TryInto<Mac>>::Err>
     {
-        // that line is bs tbh
         Ok(AmazonDashButton {
                mac: mac.try_into()?,
                device: Device::lookup()?,
